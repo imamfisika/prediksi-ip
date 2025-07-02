@@ -4,7 +4,7 @@ from sklearn.preprocessing import LabelEncoder
 import pickle
 
 # Load dataset
-df = pd.read_csv("data2.csv")
+df = pd.read_csv("data3.csv")
 
 # Klasifikasi label IP ke kategori
 def ip_to_label(ip):
