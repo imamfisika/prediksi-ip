@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  ip_predictor:
+    build: .
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true

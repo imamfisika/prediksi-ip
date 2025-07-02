@@ -1,36 +1,20 @@
 import pandas as pd
-from sklearn.naive_bayes import GaussianNB
-from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LinearRegression
 import pickle
 
-# Load dataset
+# Load data
 df = pd.read_csv("data3.csv")
 
-# Klasifikasi label IP ke kategori
-def ip_to_label(ip):
-    if ip < 2.5:
-        return "rendah"
-    elif ip < 3.25:
-        return "sedang"
-    else:
-        return "tinggi"
-
-df['label'] = df['semester5'].apply(ip_to_label)
-
-# Fitur dan label
+# Fitur dan target (prediksi IP semester ke-5)
 X = df[['semester1', 'semester2', 'semester3', 'semester4']]
-y = df['label']
+y = df['semester5']  # sekarang nilai float
 
-# Encode label
-le = LabelEncoder()
-y_encoded = le.fit_transform(y)
+# Latih model regresi
+model = LinearRegression()
+model.fit(X, y)
 
-# Train model
-model = GaussianNB()
-model.fit(X, y_encoded)
-
-# Simpan model dan label encoder
+# Simpan model
 with open("model.pkl", "wb") as f:
-    pickle.dump((model, le), f)
+    pickle.dump(model, f)
 
-print("Model berhasil dilatih dan disimpan sebagai 'model.pkl'")
+print("✅ Model regresi berhasil disimpan ke 'model.pkl'")
