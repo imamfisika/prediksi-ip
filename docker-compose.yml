@@ -3,7 +3,7 @@ version: "3.9"
 services:
   ip_predictor:
     build: .
+    ports:
+      - "8000:8000"
     volumes:
       - .:/app
-    stdin_open: true
-    tty: true

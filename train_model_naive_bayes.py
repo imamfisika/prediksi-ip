@@ -15,7 +15,7 @@ def ip_to_label(ip):
     else:
         return "tinggi"
 
-df['label'] = df['semester_5'].apply(ip_to_label)
+df['label'] = df['semester5'].apply(ip_to_label)
 
 # Fitur dan label
 X = df[['semester1', 'semester2', 'semester3', 'semester4']]
@@ -33,4 +33,4 @@ model.fit(X, y_encoded)
 with open("model.pkl", "wb") as f:
     pickle.dump((model, le), f)
 
-print("✅ Model berhasil disimpan ke 'model.pkl'")
+print("✅ Model berhasil disimpan ke 'model_naive_bayes.pkl'")
