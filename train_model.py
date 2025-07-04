@@ -3,7 +3,7 @@ from sklearn.naive_bayes import GaussianNB
 import pandas as pd
 import pickle
 
-df = pd.read_csv("data.csv")
+df = pd.read_csv("data3.csv")
 df = df[df['semester5'] > 0]
 
 # Fitur dan target regresi
