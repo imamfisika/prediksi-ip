@@ -4,6 +4,4 @@ services:
   ip_predictor:
     build: .
     ports:
-      - "8000:8000"
-    volumes:
-      - .:/app
+      - "8080:8000"

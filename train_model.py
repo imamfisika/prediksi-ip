@@ -1,30 +1,39 @@
-import pandas as pd
 from sklearn.linear_model import LinearRegression
+from sklearn.naive_bayes import GaussianNB
+import pandas as pd
 import pickle
-from sklearn.metrics import mean_squared_error
 
-# Load data
-df = pd.read_csv("data3.csv")
-
-# Hapus data yang semester5-nya 0 (tidak valid)
+df = pd.read_csv("data.csv")
 df = df[df['semester5'] > 0]
 
-
-# Fitur dan target (prediksi IP semester ke-5)
+# Fitur dan target regresi
 X = df[['semester1', 'semester2', 'semester3', 'semester4']]
-y = df['semester5']  # sekarang nilai float
+y_reg = df['semester5']
 
-# Latih model regresi
-model = LinearRegression()
-model.fit(X, y)
+# Kategorisasi untuk Naive Bayes
+def ip_to_label(ip):
+    if ip >= 3.5:
+        return "tinggi"
+    elif ip >= 2.75:
+        return "sedang"
+    else:
+        return "rendah"
 
-y_pred = model.predict(X)
-mse = mean_squared_error(y, y_pred)
+y_class = df['semester5'].apply(ip_to_label)
 
-print(f"📉 MSE (mean squared error): {mse:.4f}")
+# Train Linear Regression
+reg_model = LinearRegression()
+reg_model.fit(X, y_reg)
 
-# Simpan model
-with open("model.pkl", "wb") as f:
-    pickle.dump(model, f)
+# Train Naive Bayes
+nb_model = GaussianNB()
+nb_model.fit(X, y_class)
 
-print("✅ Model regresi berhasil disimpan ke 'model.pkl'")
+# Save both models
+with open("model_reg.pkl", "wb") as f:
+    pickle.dump(reg_model, f)
+
+with open("model_nb.pkl", "wb") as f:
+    pickle.dump(nb_model, f)
+
+print("✅ Model regresi dan naive bayes berhasil disimpan.")
