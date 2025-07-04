@@ -41,7 +41,7 @@ docker-compose up --build
 API akan tersedia di:
 
 ```
-http://localhost:8000
+http://localhost:8080
 ```
 
 ---
@@ -100,7 +100,7 @@ http://localhost:8000
 
 - Pastikan `data.csv` tersedia sebelum build agar model bisa dilatih saat build.
 - API ini **tidak menyimpan data**, hanya melakukan prediksi berbasis input.
-- Dokumentasi interaktif tersedia di `http://localhost:8000/docs`
+- Dokumentasi interaktif tersedia di `http://localhost:8080/docs`
 
 ---
 
