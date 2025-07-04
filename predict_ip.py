@@ -15,7 +15,6 @@ except ValueError:
     print("❗ Masukkan hanya angka desimal")
     exit(1)
 
-# Prediksi IP semester ke-5
 
 
 input_data = pd.DataFrame([{
