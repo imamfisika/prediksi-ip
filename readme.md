@@ -1,9 +1,9 @@
 # Prediksi IP Mahasiswa Menggunakan API FastAPI
 
-Proyek ini menyediakan REST API untuk memprediksi **IP (Indeks Prestasi) semester ke-5 mahasiswa** berdasarkan IP semester 1 hingga 4. Terdapat dua jenis prediksi:
+Proyek ini menyediakan REST API untuk memprediksi **IP (Indeks Prestasi) mahasiswa** untuk semester 2 hingga 5 berdasarkan nilai IP semester sebelumnya. Prediksi dapat berupa:
 
 1. **Prediksi numerik** menggunakan **Linear Regression**
-2. **Prediksi kategori** menggunakan **Naive Bayes** (rendah, sedang, tinggi)
+2. **Prediksi kategori** menggunakan **Naive Bayes** (rendah, sedang, tinggi — khusus semester 5)
 
 ---
 
@@ -11,11 +11,18 @@ Proyek ini menyediakan REST API untuk memprediksi **IP (Indeks Prestasi) semeste
 
 ### 1. Linear Regression
 
-Model ini digunakan untuk memprediksi nilai kontinu (angka) IP semester 5 berdasarkan kombinasi fitur numerik (IP semester 1–4).
+Model ini digunakan untuk memprediksi nilai kontinu IP semester 2 hingga 5. Masing-masing semester memiliki model yang berbeda dengan fitur input sebagai berikut:
+
+| Prediksi semester | Fitur input              |
+| ----------------- | ------------------------ |
+| Semester 2        | `semester1`              |
+| Semester 3        | `semester1`, `semester2` |
+| Semester 4        | `semester1–3`            |
+| Semester 5        | `semester1–4`            |
 
 ### 2. Naive Bayes (GaussianNB)
 
-Model klasifikasi untuk mengelompokkan IP semester 5 ke dalam 3 kategori:
+Model klasifikasi khusus untuk IP semester 5 dalam 3 kategori:
 
 - **tinggi** (≥ 3.5)
 - **sedang** (≥ 2.75 dan < 3.5)
@@ -57,11 +64,12 @@ http://localhost:8080
 {"message": "API prediksi IP aktif."}
 ```
 
-### 🔹 `POST /predict`
+### 🔹 `POST /predict/{semester}`
 
-- Prediksi IP semester 5 dalam bentuk angka **dan** kategori
+- Prediksi IP semester ke-`n` berdasarkan input semester sebelumnya
+- **Parameter URL:** `semester` (2 hingga 5)
 
-#### 🔸 Request Body
+#### 🔸 Request Body (semua semester input)
 
 ```json
 {
@@ -72,35 +80,39 @@ http://localhost:8080
 }
 ```
 
-#### 🔸 Response
+#### 🔸 Response (contoh prediksi semester 3)
 
 ```json
 {
-  "prediksi_ip_semester5": 3.38,
-  "kategori_ip_semester5": "sedang"
+  "prediksi_ip_semester3": 3.18
 }
 ```
+
+### 🔹 `POST /predict/5/kategori`
+
+- Prediksi kategori IP semester 5 (rendah, sedang, tinggi)
+- **Input:** IP semester 1–4
 
 ---
 
 ## 📁 File Penting
 
-| Nama File            | Deskripsi                                                       |
-| -------------------- | --------------------------------------------------------------- |
-| `train_model.py`     | Melatih 2 model (regresi & naive bayes) dan menyimpan ke `.pkl` |
-| `api.py`             | API FastAPI untuk prediksi nilai dan kategori IP                |
-| `data.csv`           | Dataset IP semester 1–5                                         |
-| `Dockerfile`         | Build image Python + training + API                             |
-| `docker-compose.yml` | Jalankan container dengan expose port 8000                      |
-| `requirements.txt`   | Daftar dependency (pandas, scikit-learn, fastapi, uvicorn)      |
+| Nama File            | Deskripsi                                                                 |
+| -------------------- | ------------------------------------------------------------------------- |
+| `train_model.py`     | Melatih model regresi untuk semester 2–5 dan naive bayes untuk semester 5 |
+| `api.py`             | API FastAPI dengan endpoint fleksibel per semester                        |
+| `data.csv`           | Dataset IP mahasiswa semester 1–5                                         |
+| `Dockerfile`         | Image Python + pelatihan model + API                                      |
+| `docker-compose.yml` | Menjalankan container dan expose port                                     |
+| `requirements.txt`   | Dependency proyek                                                         |
 
 ---
 
 ## ⚠️ Catatan
 
-- Pastikan `data.csv` tersedia sebelum build agar model bisa dilatih saat build.
-- API ini **tidak menyimpan data**, hanya melakukan prediksi berbasis input.
-- Dokumentasi interaktif tersedia di `http://localhost:8080/docs`
+- Pastikan `data.csv` tersedia sebelum build agar model dapat dilatih.
+- Prediksi hanya berjalan jika model sudah tersedia.
+- Dokumentasi Swagger tersedia di `http://localhost:8080/docs`
 
 ---
 
