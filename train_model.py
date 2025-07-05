@@ -4,7 +4,7 @@ from sklearn.naive_bayes import GaussianNB
 import pickle
 import os
 
-df = pd.read_csv("data.csv")
+df = pd.read_csv("data3.csv")
 df = df.dropna()
 
 # Siapkan direktori penyimpanan model
