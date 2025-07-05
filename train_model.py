@@ -31,14 +31,22 @@ def ip_to_label(ip):
     else:
         return "rendah"
 
-df["kategori5"] = df["semester5"].apply(ip_to_label)
-X_nb = df[["semester1", "semester2", "semester3", "semester4"]]
-y_nb = df["kategori5"]
+# Buat label kategori untuk semua semester
+for sem in range(2, 6):
+    df[f'kategori{sem}'] = df[f'semester{sem}'].apply(ip_to_label)
 
-nb_model = GaussianNB()
-nb_model.fit(X_nb, y_nb)
+# Train Naive Bayes untuk kategori semester 2–5
+for sem in range(2, 6):
+    fitur = [f"semester{i}" for i in range(1, sem)]
+    X = df[fitur]
+    y = df[f"kategori{sem}"]
 
-with open("models/model_nb_sem5.pkl", "wb") as f:
-    pickle.dump(nb_model, f)
+    model = GaussianNB()
+    model.fit(X, y)
+
+    with open(f"models/nb_model_sem{sem}.pkl", "wb") as f:
+        pickle.dump(model, f)
+
+
 
 print("✅ Semua model berhasil dilatih dan disimpan.")

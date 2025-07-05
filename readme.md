@@ -3,7 +3,7 @@
 Proyek ini menyediakan REST API untuk memprediksi **IP (Indeks Prestasi) mahasiswa** untuk semester 2 hingga 5 berdasarkan nilai IP semester sebelumnya. Prediksi dapat berupa:
 
 1. **Prediksi numerik** menggunakan **Linear Regression**
-2. **Prediksi kategori** menggunakan **Naive Bayes** (rendah, sedang, tinggi — khusus semester 5)
+2. **Prediksi kategori** menggunakan **Naive Bayes** (rendah, sedang, tinggi — semester 2 hingga 5)
 
 ---
 
@@ -22,7 +22,7 @@ Model ini digunakan untuk memprediksi nilai kontinu IP semester 2 hingga 5. Masi
 
 ### 2. Naive Bayes (GaussianNB)
 
-Model klasifikasi khusus untuk IP semester 5 dalam 3 kategori:
+Model klasifikasi untuk IP semester 2 hingga 5 dalam 3 kategori:
 
 - **tinggi** (≥ 3.5)
 - **sedang** (≥ 2.75 dan < 3.5)
@@ -48,7 +48,7 @@ docker-compose up --build
 API akan tersedia di:
 
 ```
-http://localhost:8080
+http://localhost:8000
 ```
 
 ---
@@ -88,23 +88,42 @@ http://localhost:8080
 }
 ```
 
-### 🔹 `POST /predict/5/kategori`
+### 🔹 `POST /predict/{semester}/kategori`
 
-- Prediksi kategori IP semester 5 (rendah, sedang, tinggi)
-- **Input:** IP semester 1–4
+- Prediksi kategori IP semester ke-`n` (rendah, sedang, tinggi)
+- **Parameter URL:** `semester` (2 hingga 5)
+
+#### 🔸 Request Body:
+
+```json
+{
+  "semester1": 3.0,
+  "semester2": 3.1,
+  "semester3": 3.2,
+  "semester4": 3.3
+}
+```
+
+#### 🔸 Response (contoh prediksi kategori semester 4)
+
+```json
+{
+  "kategori_ip_semester4": "sedang"
+}
+```
 
 ---
 
 ## 📁 File Penting
 
-| Nama File            | Deskripsi                                                                 |
-| -------------------- | ------------------------------------------------------------------------- |
-| `train_model.py`     | Melatih model regresi untuk semester 2–5 dan naive bayes untuk semester 5 |
-| `api.py`             | API FastAPI dengan endpoint fleksibel per semester                        |
-| `data.csv`           | Dataset IP mahasiswa semester 1–5                                         |
-| `Dockerfile`         | Image Python + pelatihan model + API                                      |
-| `docker-compose.yml` | Menjalankan container dan expose port                                     |
-| `requirements.txt`   | Dependency proyek                                                         |
+| Nama File            | Deskripsi                                              |
+| -------------------- | ------------------------------------------------------ |
+| `train_model.py`     | Melatih model regresi & naive bayes untuk semester 2–5 |
+| `api.py`             | API FastAPI dengan endpoint fleksibel per semester     |
+| `data.csv`           | Dataset IP mahasiswa semester 1–5                      |
+| `Dockerfile`         | Image Python + pelatihan model + API                   |
+| `docker-compose.yml` | Menjalankan container dan expose port                  |
+| `requirements.txt`   | Dependency proyek                                      |
 
 ---
 
@@ -112,7 +131,7 @@ http://localhost:8080
 
 - Pastikan `data.csv` tersedia sebelum build agar model dapat dilatih.
 - Prediksi hanya berjalan jika model sudah tersedia.
-- Dokumentasi Swagger tersedia di `http://localhost:8080/docs`
+- Dokumentasi Swagger tersedia di `http://localhost:8000/docs`
 
 ---
 
