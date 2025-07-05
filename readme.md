@@ -48,7 +48,7 @@ docker-compose up --build
 API akan tersedia di:
 
 ```
-http://localhost:8000
+http://localhost:8080
 ```
 
 ---
@@ -131,7 +131,7 @@ http://localhost:8000
 
 - Pastikan `data.csv` tersedia sebelum build agar model dapat dilatih.
 - Prediksi hanya berjalan jika model sudah tersedia.
-- Dokumentasi Swagger tersedia di `http://localhost:8000/docs`
+- Dokumentasi Swagger tersedia di `http://localhost:8080/docs`
 
 ---
 
