@@ -11,6 +11,9 @@ class IPSemester(BaseModel):
     semester2: float = 0.0
     semester3: float = 0.0
     semester4: float = 0.0
+    semester5: float = 0.0
+    semester6: float = 0.0
+    semester7: float = 0.0
 
 @app.get("/")
 def home():
@@ -18,8 +21,8 @@ def home():
 
 @app.post("/predict/{semester}")
 def predict_semester(semester: int, data: IPSemester):
-    if semester < 2 or semester > 5:
-        raise HTTPException(status_code=400, detail="Semester harus antara 2 dan 5.")
+    if semester < 2 or semester > 8:
+        raise HTTPException(status_code=400, detail="Semester harus antara 2 dan 8.")
 
     model_path = f"models/model_sem{semester}.pkl"
     if not os.path.exists(model_path):
@@ -28,7 +31,6 @@ def predict_semester(semester: int, data: IPSemester):
     with open(model_path, "rb") as f:
         model = pickle.load(f)
 
-    # Ambil input sesuai fitur yang dibutuhkan
     fitur = [f"semester{i}" for i in range(1, semester)]
     input_data = pd.DataFrame([data.dict()])
     input_df = input_data[fitur]
@@ -36,21 +38,21 @@ def predict_semester(semester: int, data: IPSemester):
     pred = model.predict(input_df)[0]
     return {f"prediksi_ip_semester{semester}": round(pred, 2)}
 
-@app.post("/predict/5/kategori")
-def predict_kategori(data: IPSemester):
-    model_path = "models/model_nb_sem5.pkl"
-    if not os.path.exists(model_path):
+@app.post("/predict/{semester}/kategori")
+def predict_kategori(semester: int, data: IPSemester):
+    if semester < 2 or semester > 8:
+        raise HTTPException(status_code=400, detail="Semester harus antara 2 dan 8.")
+
+    path = f"models/nb_model_sem{semester}.pkl"
+    if not os.path.exists(path):
         raise HTTPException(status_code=404, detail="Model kategori tidak ditemukan.")
 
-    with open(model_path, "rb") as f:
+    fitur = [f"semester{i}" for i in range(1, semester)]
+    input_df = pd.DataFrame([data.dict()])[fitur]
+
+    with open(path, "rb") as f:
         model = pickle.load(f)
 
-    input_df = pd.DataFrame([{
-        "semester1": data.semester1,
-        "semester2": data.semester2,
-        "semester3": data.semester3,
-        "semester4": data.semester4,
-    }])
+    kategori = model.predict(input_df)[0]
 
-    pred = model.predict(input_df)[0]
-    return {"kategori_ip_semester5": pred}
+    return {f"kategori_ip_semester{semester}": kategori}
