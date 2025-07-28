@@ -5,7 +5,7 @@ import pickle
 import os
 
 df = pd.read_csv("data4.csv")
-df = df.dropna()
+df = df.fillna(df.mean())
 
 os.makedirs("models", exist_ok=True)
 
