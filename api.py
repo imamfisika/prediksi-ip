@@ -19,6 +19,7 @@ class IPSemester(BaseModel):
 def home():
     return {"message": "API prediksi IP aktif."}
 
+# endporint untuk memprediksi IP semester tertentu
 @app.post("/predict/{semester}")
 def predict_semester(semester: int, data: IPSemester):
     if semester < 2 or semester > 8:
@@ -32,12 +33,12 @@ def predict_semester(semester: int, data: IPSemester):
         model = pickle.load(f)
 
     fitur = [f"semester{i}" for i in range(1, semester)]
-    input_data = pd.DataFrame([data.dict()])
-    input_df = input_data[fitur]
+    input_df = pd.DataFrame([data.dict()])[fitur]
 
     pred = model.predict(input_df)[0]
     return {f"prediksi_ip_semester{semester}": round(pred, 2)}
 
+# endpoint untuk memprediksi kategori IP semester tertentu
 @app.post("/predict/{semester}/kategori")
 def predict_kategori(semester: int, data: IPSemester):
     if semester < 2 or semester > 8:
@@ -47,12 +48,11 @@ def predict_kategori(semester: int, data: IPSemester):
     if not os.path.exists(path):
         raise HTTPException(status_code=404, detail="Model kategori tidak ditemukan.")
 
-    fitur = [f"semester{i}" for i in range(1, semester)]
-    input_df = pd.DataFrame([data.dict()])[fitur]
-
     with open(path, "rb") as f:
         model = pickle.load(f)
 
-    kategori = model.predict(input_df)[0]
+    fitur = [f"semester{i}" for i in range(1, semester)]
+    input_df = pd.DataFrame([data.dict()])[fitur]
 
+    kategori = model.predict(input_df)[0]
     return {f"kategori_ip_semester{semester}": kategori}
